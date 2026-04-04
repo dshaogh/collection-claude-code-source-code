@@ -8,6 +8,8 @@ CONFIG_FILE  = CONFIG_DIR  / "config.json"
 HISTORY_FILE = CONFIG_DIR  / "input_history.txt"
 SESSIONS_DIR = CONFIG_DIR  / "sessions"
 
+MR_SESSION_DIR = SESSIONS_DIR / "mr_sessions"
+
 DEFAULTS = {
     "model":            "claude-opus-4-6",
     "max_tokens":       8192,
