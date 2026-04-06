@@ -88,7 +88,7 @@ def prompt_line(text="", cursor=False):
     cur = "█" if cursor else ""
     return [
         seg("[nano-claude-code] ", SUBTEXT),
-        seg("❯ ", CYAN, True),
+        seg("» ", CYAN, True),
         seg(text + cur, TEXT),
     ]
 

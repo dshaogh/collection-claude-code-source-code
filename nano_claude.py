@@ -2065,6 +2065,9 @@ def repl(config: dict, initial_prompt: str = None):
                         if isinstance(event, TextChunk) or show_thinking or isinstance(event, ToolStart):
                             _stop_tool_spinner()
                             spinner_shown = False
+                            # Restore │ prefix for first text chunk in plain-text (non-Rich) mode
+                            if isinstance(event, TextChunk) and not _RICH and not _post_tool:
+                                print(clr("│ ", "dim"), end="", flush=True)
 
                     if isinstance(event, TextChunk):
                         if thinking_started:
@@ -2107,7 +2110,6 @@ def repl(config: dict, initial_prompt: str = None):
                     elif isinstance(event, ToolStart):
                         flush_response()
                         print_tool_start(event.name, event.inputs, verbose)
-                        _change_spinner_phrase()
 
                     elif isinstance(event, PermissionRequest):
                         _stop_tool_spinner()
@@ -2122,8 +2124,14 @@ def repl(config: dict, initial_prompt: str = None):
                         _duplicate_suppressed = False
                         if not _RICH:
                             print(clr("│ ", "dim"), end="", flush=True)
+                        # Restart spinner while waiting for model's next action
+                        _change_spinner_phrase()
+                        _start_tool_spinner()
+                        spinner_shown = True
 
                     elif isinstance(event, TurnDone):
+                        _stop_tool_spinner()
+                        spinner_shown = False
                         if verbose:
                             flush_response()  # stop Live before printing token info
                             print(clr(
